@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Image Analysis Results</title>
+    </head>
+    <body>
+        <h1>Image Analysis Results</h1>
+        <h2>Original Image:</h2>
+        <img src="data:{{ image_type }};base64,{{ image_data }}" style="max-width: 300px; border: 5px solid #555; padding: 5px;">
+        <h2>Analysis Results:</h2>
+        <ul>
+            <li>Total Pixels: {{ results.total_pixels }}</li>
+            <li>Transparent Pixels: {{ results.transparent_pixels }}</li>
+            <li>Non-Transparent Pixels: {{ results.non_transparent_pixels }}</li>
+            <li>Non-Transparent Pixel Density: {{ results.non_transparent_pixel_density }}%</li>
+        </ul>
+        <hr>
+        <a href="/">
+            <button>Analyse another image</button>
+        </a>
+    </body>
+</html>
