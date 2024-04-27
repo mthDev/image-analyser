@@ -24,13 +24,13 @@ This is a Python Flask web application designed to allow users to upload images 
 1. Clone this repository:
 
     ```bash
-    git clone https://github.com/yourusername/image-analysis-app.git
+    git clone https://github.com/mthDev/image-analyser.git
     ```
 
 2. Navigate to the project directory:
 
     ```bash
-    cd image-analysis-app
+    cd image-analysis
     ```
 
 3. Install dependencies:
@@ -44,10 +44,10 @@ This is a Python Flask web application designed to allow users to upload images 
 1. Start the Flask server:
 
     ```bash
-    python app.py
+    python application.py
     ```
 
-2. Open your web browser and navigate to `[http://localhost:5000](http://127.0.0.1:5000)`.
+2. Open your web browser and navigate to `[http://localhost:3000](http://localhost:3000)`.
 3. Use the web interface to upload images and view their analysis results.
 
 ## Contributing
