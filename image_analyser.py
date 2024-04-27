@@ -86,7 +86,7 @@ def error_invalid_output_format():
         CustomError(
             message="The output format is invalid.",
             code=400,
-            instruction=f"Available values are: {", ".join(OUTPUT_FORMATS)}",
+            instruction=f'Available values are: {", ".join(OUTPUT_FORMATS)}',
             traceback="N/A"
         )
     )
