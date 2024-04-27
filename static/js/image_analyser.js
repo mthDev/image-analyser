@@ -1,24 +1,62 @@
-let isImageSet = false;
+document.getElementById('fileInput').addEventListener('change', function(event) {
+    const file = event.target.files[0];
+    if (file) {
+        showModal('loadingModal');
+        displayImage(event);
+        analyseImage(file);
+    }
+});
 
-function previewImage(event) {
+async function analyseImage(file) {
+    const formData = new FormData();
+    formData.append("file", file);
+    const requestOptions = {
+        method: "POST",
+        body: formData
+    };
+    await fetch("/image/analyse?output_format=HTML", requestOptions)
+        .then((response) => {
+            if (!response.ok) {
+                return response.text().then(errorText => displayError(errorText));
+            } else {
+                return response.text().then((result) => displayMetadata(result))
+            }
+        })
+        .catch((error) => console.error(error));
+
+    closeModal('loadingModal');
+}
+
+function displayMetadata(results) {
+    let container = document.getElementById('results-container');
+    container.innerHTML = results;
+}
+
+function displayError(error) {
+
+    closeModal('loadingModal');
+
+    const errorObj = JSON.parse(error)
+    let code = document.getElementById('code');
+    let message = document.getElementById('message');
+    let instruction = document.getElementById('instruction');
+    code.innerHTML = errorObj['code'];
+    message.innerHTML = errorObj['message'];
+    instruction.innerHTML = errorObj['instruction'];
+
+    showModal('errorModal');
+}
+
+function displayImage(event) {
     let reader = new FileReader();
     reader.onload = function(){
-        let modal = document.getElementById('previewModal');
-        let modalContent = document.getElementById('modal-content');
+        let imgContent = document.getElementById('image-content');
         let imgElement = document.createElement('img');
         imgElement.src = reader.result;
         imgElement.className = 'modal-content';
-        imgElement.style.maxWidth = "80%";
-        imgElement.style.maxHeight = "80%";
-        modalContent.innerHTML = '';
-        modalContent.appendChild(imgElement);
-        modal.style.display = 'block';
-        setTimeout(() => { // Delay to ensure the transition is applied
-            modal.style.opacity = '1';
-        }, 10);
-         isImageSet = true; // Set flag to true
-        document.getElementById('showModalBtn').disabled = false;
-        document.getElementById('analyseBtn').disabled = false;
+        imgElement.style.maxWidth = "500px";
+        imgContent.innerHTML = '';
+        imgContent.appendChild(imgElement);
     }
     try {
         reader.readAsDataURL(event.target.files[0]);
@@ -27,49 +65,19 @@ function previewImage(event) {
     }
 }
 
-document.getElementById('fileInput').addEventListener('change', function(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const fileSize = file.size; // File size in bytes
-        const fileType = file.type; // File type (MIME type)
-        const fileName = file.name; // File name
-        const img = new Image();
-        img.onload = function() {
-            const resolution = this.width + 'x' + this.height; // Image resolution
-            let elementFileName = document.getElementById('imgFileName')
-            let elementFileSize = document.getElementById('imgFileSize')
-            let elementFileType = document.getElementById('imgFileType')
-            let elementResolution = document.getElementById('imgResolution')
-            elementFileName.innerHTML = 'File Name: ' + fileName;
-            elementFileSize.innerHTML = 'File Size: ' + fileSize + ' bytes';
-            elementFileType.innerHTML = 'File Type: ' + fileType;
-            elementResolution.innerHTML = 'Resolution: ' + resolution;
-        };
-        img.src = URL.createObjectURL(file);
-    }
-});
 
-// Preview Modal Close
-document.getElementsByClassName('close')[0].addEventListener('click', function() {
-    let modal = document.getElementById('previewModal');
+function closeModal(modalId) {
+    let modal = document.getElementById(modalId);
     modal.style.opacity = '0';
-    setTimeout(() => { // Delay to ensure the transition is applied
+    setTimeout(() => {
         modal.style.display = 'none';
-    }, 500);
-});
-
-function showModal() {
-    if (isImageSet) {
-        let modal = document.getElementById('previewModal');
-        modal.style.display = 'block';
-        setTimeout(() => { // Delay to ensure the transition is applied
-            modal.style.opacity = '1';
-        }, 10);
-    }
+    }, 100);
 }
 
-// Preview Modal Set
-document.getElementById('fileInput').addEventListener('change', previewImage);
-
-// Showing Error Modal
-$(document).ready(function(){$('#errorModal').modal('show');});
+function showModal(modalId) {
+    let modal = document.getElementById(modalId);
+    modal.style.display = 'block';
+    setTimeout(() => {
+        modal.style.opacity = '1';
+    }, 100);
+}

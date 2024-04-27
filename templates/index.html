@@ -9,95 +9,68 @@
         <script src="/static/js/bootstrap.min.js"></script>
         <script src="/static/js/jquery.min.js"></script>
     </head>
+
     <body>
+
+        <div class="navbar">
+            <div class="nav-bar__buttons">
+                <a href="{{ url_for('logout') }}" class="button__logout">Log Out</a> <!-- 👈 new code -->
+                <a href="{{ url_for('login') }}" class="button__login" >Log In</a>
+            </div>
+            <img src="/static/images/es_logo.png" alt="Embroidery Source">
+            <h2>Image Analyser</h2>
+        </div>
+
         <form method="post" enctype="multipart/form-data">
             <div class="container">
-                <!-- First row -->
-                <div class="row">
-                    <div class="col border-cell header-main">
-                        <img src="/static/images/es_logo.png">
-                        <h2>Image Analyser</h2>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="barrier">
-                        <div class="col border-cell instructions">
-                            <h3>Background</h3>
-                            <p>The image analysis application is a desktop tool designed to help users analyse images by
-                                counting the number of transparent and non-transparent pixels. It provides a simple and
-                                intuitive interface for users to upload an image file, perform the analysis, and view
-                                the results.</p>
-                            <br>
-                            <h3>Using the Application:</h3>
-                            <ul>
-                                <li>Image Selection: Click the "Select image for analysis" button to select an image file
-                                    from your local machine. A image preview will be seen once loaded.</li>
-                                <li>Preview Selection: Click the "Show selected image" button to see your selected image
-                                    and associated metadata.
-                                <li>Image Analysis: Once an image is selected, click "Analyse selected image". The
-                                    application will analyse the image and display the results, including the total
-                                    number of pixels, transparent pixels, non-transparent pixels and the percentage
-                                    of non-transparent pixel density.</li>
-                                <li>Result Display: The analysis results will be displayed in the application window,
-                                    providing insights into the composition of the selected image.</li>
-                                <li>Analysing another image: In the analyst results window, select "Analyse another
-                                    image" and repeat the above steps.</li>
-                                <li>Closing the Application: Close the application window to exit the program.</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col border-cell">
-                        <label class="btn btn-primary">
-                            <input type="file" name="file" id="fileInput" class="fileInput" accept="image/*">
-                            <i class="fa fa-cloud-upload"></i> Select Image for Analysis
-                        </label>
-                        <button class="btn btn-primary" type="button" id="showModalBtn" onclick="showModal()" disabled>Show selected image</button>
-                        <input class="btn btn-primary" type="submit" id="analyseBtn" value="Analyse selected image" disabled>
-                    </div>
-                </div>
-
+                <p>The image analysis application is a desktop tool designed to help users analyse images by
+                    counting the number of transparent and non-transparent pixels. It provides a simple and
+                    intuitive interface for users to upload an image file, perform the analysis, and view
+                    the results.</p>
+                <br>
+                <label class="btn btn-primary image-selector">
+                    <input type="file" name="file" id="fileInput" class="fileInput" accept="image/*">
+                    <i class="fa fa-cloud-upload"></i> Select Image for Analysis
+                </label>
+                <br>
+                <div id="image-content"></div>
+                <br>
+                <hr>
+                <div id="results-container"></div>
             </div>
         </form>
 
-        <div id="previewModal" class="modal">
-            <span class="close">&times;</span>
-            <div id="modal-content"></div>
-            <hr>
-            <label class="img-metadata" id="imgFileName"></label><br>
-            <label class="img-metadata" id="imgFileSize"></label><br>
-            <label class="img-metadata" id="imgFileType"></label><br>
-            <label class="img-metadata" id="imgResolution"></label><br>
-        </div>
-
-        <div id="loadingModal" class="modal">
-          <div class="modal-content">
-            <div class="loader"></div>
-            <p>Analysing...</p>
-          </div>
-        </div>
-
-        {% if error %}
-            <div class="modal" id="errorModal" tabindex="-1" role="dialog">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title">Error</h5>
-                        </div>
-                        <div class="modal-body">
-                            <p>{{ error }}</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        </div>
+        <div class="modal" id="loadingModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Analysing image</h5>
+                    </div>
+                    <div class="modal-body">
+                        <div class="loader"></div><p>Please wait..</p>
                     </div>
                 </div>
             </div>
-        {% endif %}
+        </div>
+
+        <div class="modal" id="errorModal" tabindex="-1" role="dialog">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 id="code" class="modal-title"></h4>
+                        <h5 id="message" class="modal-title"></h5>
+                    </div>
+                    <div class="modal-body">
+                        <p id="instruction"></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal('errorModal')">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <script src="/static/js/image_analyser.js"></script>
+
     </body>
 </html>
